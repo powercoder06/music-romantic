@@ -10,6 +10,25 @@ const prevBtn = document.getElementById('prev');
 const playBtn = document.getElementById('play');
 const nextBtn = document.getElementById('next');
 
+const options = {
+	method: 'GET',
+	headers: {
+		'X-RapidAPI-Key': 'aa70e7689bmshaac36a6b0deb0c3p16ba65jsnc54e68fe65da',
+		'X-RapidAPI-Host': 'spotify81.p.rapidapi.com'
+	}
+};
+
+async function getSong() {
+    try {
+        const response = await fetch('https://spotify81.p.rapidapi.com/top_200_tracks', options);
+        apiSongs = await response.json();
+        console.log(apiSongs);
+    }catch (err) {
+        console.error(err);
+    }
+       
+}
+getSong();      
 //Music
 const songs = [
     {
