@@ -10,148 +10,133 @@ const prevBtn = document.getElementById('prev');
 const playBtn = document.getElementById('play');
 const nextBtn = document.getElementById('next');
 
-const options = {
-	method: 'GET',
-	headers: {
-		'X-RapidAPI-Key': 'aa70e7689bmshaac36a6b0deb0c3p16ba65jsnc54e68fe65da',
-		'X-RapidAPI-Host': 'spotify81.p.rapidapi.com'
-	}
-};
-
-let apiSongs = [];
 //Music
-const Index = Math.floor(Math.random() * apiSongs.length);
+const songs = [
+    {
+        name:'Night Changes',
+        displayName:'Night Changes',
+        artist:'One Direction',
+    },
+    {
+        name:'Dandelions',
+        displayName:'Dandelions',
+        artist:'Ruth B.',
+    },
+    {
+        name:'Ik Lamha',
+        displayName:'Ik Lamha',
+        artist:'Unknown',
+    },
+    {
+        name:'Aankhon Se Batana',
+        displayName:'Aankhon Se Batana',
+        artist:'Dikshant',
+    }
 
+]
 
+// Check if playing
+let isPlaying = false;
 
-// // Check if playing
-// let isPlaying = false;
-
-// // Play
-// function playSong() {
-//     isPlaying = true;
-//     playBtn.classList.replace('fa-play', 'fa-pause');
-//     playBtn.setAttribute('title', 'Pause');
-//     music.play();
-// }
-
-// // Pause
-// function pauseSong() {
-//     isPlaying = false;
-//     playBtn.classList.replace('fa-pause', 'fa-play');
-//     playBtn.setAttribute('title', 'Play');
-//     music.pause();
-// }
-
-// // Play or Pause Event Listeners
-// playBtn.addEventListener('click', () => (isPlaying ? pauseSong() : playSong()));
-
-// // Update DOM
-function newSongs() {
-    const songs = apiSongs[Index];
-    console.log(songs.trackMetadata);
+// Play
+function playSong() {
+    isPlaying = true;
+    playBtn.classList.replace('fa-play', 'fa-pause');
+    playBtn.setAttribute('title', 'Pause');
+    music.play();
 }
+
+// Pause
+function pauseSong() {
+    isPlaying = false;
+    playBtn.classList.replace('fa-pause', 'fa-play');
+    playBtn.setAttribute('title', 'Play');
+    music.pause();
+}
+
+// Play or Pause Event Listeners
+playBtn.addEventListener('click', () => (isPlaying ? pauseSong() : playSong()));
+
+// Update DOM
 
 function loadSong(songs) {
-    title.textContent = songs.trackMetadata.trackName;
+    title.textContent = songs.displayName;
     artist.textContent = songs.artist;
-    music.src= songs.trackMetadata.trackUri;
-    image.src= songs.trackMetadata.displayImageUri;
+    music.src= `music/${songs.name}.mp3`;
+    image.src= `img/${songs.name}.jpg`;
 }
 
-function newSongs() {
-    const songs = apiSongs[Index];
-    console.log(songs.trackMetadata);
+//Current song
+let songIndex = 0;
+
+// Previous song
+function prevSong() {
+    songIndex--;
+    if(songIndex < 0) {
+        songIndex = songs.length - 1;
+    }
+    loadSong(songs[songIndex]);
+    playSong();
 }
 
-// //Current song
-// let songIndex = 0;
 
-// // Previous song
-// function prevSong() {
-//     songIndex--;
-//     if(songIndex < 0) {
-//         songIndex = songs.length - 1;
-//     }
-//     loadSong(songs[songIndex]);
-//     playSong();
-// }
+// Next song
+function nextSong() {
+    songIndex++;
+    if(songIndex > songs.length - 1) {
+        songIndex = 0;
+    }
+    loadSong(songs[songIndex]);
+    playSong();
+}
 
+// on load- Select first song
+loadSong(songs[songIndex]);
 
-// // Next song
-// // function nextSong() {
-//     songIndex++;
-//     if(songIndex > songs.length - 1) {
-//         songIndex = 0;
-//     }
-  
-//     loadSong(songs[songIndex]);
-   
-//      playSong();
-// }
-
-// // on load- Select first song
-
-
-// //Update Progress Bar & Time
-// function updateProgressBar(e) {
-//     if(isPlaying){
-//         const {duration, currentTime } =e.srcElement;
-//         //Update progress Bar width
-//         const progressPercent = (currentTime/ duration) * 100;
-//         progress.style.width = `${progressPercent}%`;
-//         //Calculate display for duration
-//         const durationMinutes = Math.floor(duration/60);
+//Update Progress Bar & Time
+function updateProgressBar(e) {
+    if(isPlaying){
+        const {duration, currentTime } =e.srcElement;
+        //Update progress Bar width
+        const progressPercent = (currentTime/ duration) * 100;
+        progress.style.width = `${progressPercent}%`;
+        //Calculate display for duration
+        const durationMinutes = Math.floor(duration/60);
       
-//         let durationSeconds = Math.floor(duration % 60);
-//         if(durationSeconds < 10) {
-//             durationSeconds = `0${durationSeconds}`; 
-//         }
+        let durationSeconds = Math.floor(duration % 60);
+        if(durationSeconds < 10) {
+            durationSeconds = `0${durationSeconds}`; 
+        }
        
-//         //Delay switching duration Element to avoid NaN
-//         if(durationSeconds) {
-//             durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
-//         }
-//         //Calculate display for currentTime
-//         const currentMinutes = Math.floor(currentTime/60);
+        //Delay switching duration Element to avoid NaN
+        if(durationSeconds) {
+            durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+        }
+        //Calculate display for currentTime
+        const currentMinutes = Math.floor(currentTime/60);
        
-//         let currentSeconds = Math.floor(currentTime % 60);
-//         if(currentSeconds < 10) {
-//             currentSeconds = `0${currentSeconds}`; 
-//         }
-//         //Delay switching currentTime
-//         if(currentSeconds) {
-//             currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
-//         }
-//     }
-// }
+        let currentSeconds = Math.floor(currentTime % 60);
+        if(currentSeconds < 10) {
+            currentSeconds = `0${currentSeconds}`; 
+        }
+        //Delay switching currentTime
+        if(currentSeconds) {
+            currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+        }
+    }
+}
 
 //Set progress Bar
-// function setProgressBar(e) {
-//    const width = this.clientWidth;
-//    const clickX = e.offsetX;
-//    const {duration} =music;
-//    music.currentTime = (clickX / width) * duration;
-// }
-
-async function getSong() {
-    try {
-        const response = await fetch('https://spotify81.p.rapidapi.com/top_200_tracks', options);
-        apiSongs = await response.json();
-        newSongs();
-    }catch (err) {
-        console.error(err);
-    }
-       
+function setProgressBar(e) {
+   const width = this.clientWidth;
+   const clickX = e.offsetX;
+   const {duration} =music;
+   music.currentTime = (clickX / width) * duration;
 }
 
 //Event Listeners
-// prevBtn.addEventListener('click', prevSong);
-// nextBtn.addEventListener('click', nextSong);
-// music.addEventListener('ended', nextSong);
-// music.addEventListener('timeupdate', updateProgressBar);
-// progressContainer.addEventListener('click', setProgressBar);
-
-
-// getSong();
-loadSong(getSong());
+prevBtn.addEventListener('click', prevSong);
+nextBtn.addEventListener('click', nextSong);
+music.addEventListener('ended', nextSong);
+music.addEventListener('timeupdate', updateProgressBar);
+progressContainer.addEventListener('click', setProgressBar);
